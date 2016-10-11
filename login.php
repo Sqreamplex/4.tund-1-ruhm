@@ -1,7 +1,6 @@
 <?php
 	
 	//võtab ja kopeerib faili sisu
-	require("../../config.php");
 	require("functions.php");
 	
 	//kas kasutaja on sisse logitud
@@ -11,9 +10,7 @@
 		
 	}
 
-	
 	//var_dump(5.5);
-	
 	//var_dump($_GET);
 	//echo "<br>";
 	//var_dump($_POST);
@@ -22,50 +19,54 @@
 	$signupEmailError = "";
 	$signupPasswordError = "";
 	$signupEmail = "";
-	
+	$loginEmailError = "";
+	$loginPasswordError = "";
+	$loginEmail = "";
+
 	// kas e/post oli olemas
 	if ( isset ( $_POST["signupEmail"] ) ) {
-		
 		if ( empty ( $_POST["signupEmail"] ) ) {
-			
 			// oli email, kuid see oli tühi
 			$signupEmailError = "See väli on kohustuslik!";
-			
-		} else {
-			
-			// email on õige, salvestan väärtuse muutujasse
-			$signupEmail = $_POST["signupEmail"];
-			
-		}
-		
+		}	
 	}
 	
 	if ( isset ( $_POST["signupPassword"] ) ) {
-		
 		if ( empty ( $_POST["signupPassword"] ) ) {
-			
 			// oli password, kuid see oli tühi
 			$signupPasswordError = "See väli on kohustuslik!";
-			
 		} else {
-			
 			// tean et parool on ja see ei olnud tühi
 			// VÄHEMALT 8
-			
 			if ( strlen($_POST["signupPassword"]) < 8 ) {
-				
 				$signupPasswordError = "Parool peab olema vähemalt 8 tähemärkki pikk";
-				
 			}
-			
 		}
-		
+	}
+	
+	if ( isset ( $_POST["loginEmail"] ) ) {
+		if ( empty ( $_POST["loginEmail"] ) ) {
+			// oli email, kuid see oli tühi
+			$loginEmailError = "See väli on kohustuslik!";
+		}	
+	}
+	
+	if ( isset ( $_POST["loginPassword"] ) ) {
+		if ( empty ( $_POST["loginPassword"] ) ) {
+			// oli password, kuid see oli tühi
+			$loginPasswordError = "See väli on kohustuslik!";
+		} else {
+			// tean et parool on ja see ei olnud tühi
+			// VÄHEMALT 8
+			if ( strlen($_POST["loginPassword"]) < 8 ) {
+				$loginPasswordError = "Parool peab olema vähemalt 8 tähemärkki pikk";
+			}
+		}
 	}
 	
 	$gender = "male";
 	// KUI Tühi
 	// $gender = "";
-	
 	if ( isset ( $_POST["gender"] ) ) {
 		if ( empty ( $_POST["gender"] ) ) {
 			$genderError = "See väli on kohustuslik!";
@@ -81,21 +82,13 @@
 		 empty($signupEmailError) && 
 		 empty($signupPasswordError)
 	   ) {
-		
 		echo "Salvestan...<br>";
 		echo "email ".$signupEmail."<br>";
-		
 		$password = hash("sha512", $_POST["signupPassword"]);
-		
 		echo "parool ".$_POST["signupPassword"]."<br>";
 		echo "räsi ".$password."<br>";
-		
 		//echo $serverPassword;
-		
-		signup($signupEmail, $password);
-	   
-	   
-		
+		signup($signupEmail, $password, $gender);
 	}
 	
 	$error = "";
@@ -105,10 +98,8 @@
 		 !empty($_POST["loginEmail"]) &&
 		 !empty($_POST["loginPassword"])
 	  ) {
-		
 		//login sisse
 		$error = login($_POST["loginEmail"], $_POST["loginPassword"]);
-		
 	}
 	
 
@@ -125,11 +116,11 @@
 		<form method="POST">
 			<p style="color:red;"><?=$error;?></p>
 			<label>E-post</label><br>
-			<input name="loginEmail" type="email">
+			<input name="loginEmail" type="email" value="<?=$loginEmail;?>"> <?php echo $loginEmailError; ?>
 			
 			<br><br>
 			
-			<input name="loginPassword" type="password" placeholder="Parool">
+			<input name="loginPassword" type="password" placeholder="Parool"><?php echo $loginPasswordError; ?>
 			
 			<br><br>
 			
